@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "0dfB643/AWrdiSmsOxcAzfjT9h+qxZSHcXOYz+DMkKIF2FiIrv2rFHt3+UDd2wYl6np4IQClpThkp4UofyIQuA==",
+  "success": true,
+  "projectFilePath": "/Users/yaoun/Desktop/BDD/ClientApi/ClientApi/ClientApi.csproj",
+  "expectedPackageFiles": [
+    "/Users/yaoun/.nuget/packages/microsoft.netcore.platforms/1.1.0/microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "/Users/yaoun/.nuget/packages/netstandard.library/2.0.0/netstandard.library.2.0.0.nupkg.sha512",
+    "/Users/yaoun/.nuget/packages/nunit/3.13.3/nunit.3.13.3.nupkg.sha512",
+    "/Users/yaoun/.nuget/packages/microsoft.netcore.app.ref/6.0.12/microsoft.netcore.app.ref.6.0.12.nupkg.sha512",
+    "/Users/yaoun/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.12/microsoft.aspnetcore.app.ref.6.0.12.nupkg.sha512"
+  ],
+  "logs": []
+}
