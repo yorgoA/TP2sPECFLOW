@@ -18,7 +18,7 @@ namespace ElectionResultCalculation.Specs
         
 
         [Given(@"the election has closed")]
-        public void GivenTheElectionHasClosed():
+        public void GivenTheElectionHasClosed()
         {
             _electionClosed = true;
         }
