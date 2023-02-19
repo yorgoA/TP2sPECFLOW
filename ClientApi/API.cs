@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ElectionResultCalculator
 {
     public class ElectionResult
     {
-        private List<Candidate> candidates;
-        private int totalVotes;
-        private static List<Candidate> _candidates;
-        private static List<int> CandidatesvOTES;
+        private List<Candidate> _candidates = new List<Candidate>();
+        private List<int> _candidateVotes = new List<int>();
 
         public class Candidate
         {
@@ -16,64 +14,108 @@ namespace ElectionResultCalculator
             public int Votes;
             public int Id;
 
-            public Candidate(int id,string name, int votes)
+            public Candidate(int id, string name, int votes)
             {
                 Id = id;
                 Name = name;
                 Votes = votes;
-                
-
             }
-            
-            
         }
 
-
-        public static List<int> CreatelistCandidates(int nbCandidates)
+        public List<int> CreateListCandidates(int nbCandidates)
         {
-            _candidates = new List<Candidate>();
             for (int i = 1; i <= nbCandidates; i++)
             {
-                var candidate = new Candidate(id: i , name: $"Candidate {i}", votes: 0);
+                var candidate = new Candidate(id: i, name: $"Candidate {i}", votes: 0);
                 _candidates.Add(candidate);
-            };
-            foreach (var candidate in _candidates)
-            {
-                CandidatesvOTES.Add(candidate.Votes);
-           
+                _candidateVotes.Add(0);
             }
 
-            return CandidatesvOTES;
+            return _candidateVotes;
         }
 
-        public static void AddVotesForCandidates(int candidateNumber, int percentage)
+        public void AddVotesForCandidate(int candidateNumber, int percentage)
         {
-            foreach (var candidate in _candidates)
+            var candidate = _candidates.SingleOrDefault(c => c.Id == candidateNumber);
+            if (candidate != null)
             {
-                if (candidate.Id == candidateNumber)
-                {
-                    candidate.Votes = percentage;
-                } 
+                candidate.Votes += percentage;
+                _candidateVotes = _candidates.Select(c => c.Votes).ToList();
+                _candidates = _candidates.OrderByDescending(c => c.Votes).ToList();
+            }
+            else
+            {
+                candidate.Votes += 0;
             }
         }
-        public static int CalculateElectionResult(List<int> NbVotesOfCandidates)
+
+        public int CalculateElectionResult(List<int> nbVotesOfCandidates)
         {
-            int winner = 0;
-            int maxVotes = 0;
-            List<int> voteCount = NbVotesOfCandidates;
-            int count = voteCount.Count();
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < nbVotesOfCandidates.Count; i++)
             {
-                if (voteCount[i] > maxVotes)
+                _candidates[i].Votes = nbVotesOfCandidates[i];
+            }
+
+            return _candidates[0].Id;
+        }
+
+        public bool ShouldHoldSecondRound()
+        {
+            return ElectionResult.SecondRoundRequired(_candidateVotes);
+        }
+
+        public List<int> CandidatesInSecondRound()
+        {
+            List<int> candidates = new List<int>();
+            List<int> sortedVotes = _candidateVotes.OrderByDescending(v => v).ToList();
+            int maxVotes = sortedVotes[0];
+            int secondMaxVotes = sortedVotes[1];
+
+            for (int i = 0; i < _candidateVotes.Count; i++)
+            {
+                if (_candidateVotes[i] == maxVotes)
                 {
-                    maxVotes = voteCount[i];
-                    winner = i;
+                    candidates.Add(i + 1);
+                }
+                else if (_candidateVotes[i] == secondMaxVotes)
+                {
+                    candidates.Add(i + 1);
                 }
             }
-            return winner;
+
+            return candidates;
         }
-    
+
+
+        public static bool SecondRoundRequired(List<int> votes)
+        {
+            int totalVotes = votes.Sum();
+            int maxVotes = votes.Max();
+
+            if (maxVotes > totalVotes / 2)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public static List<int> GetCandidatesForSecondRound(List<int> votes)
+        {
+            List<int> candidates = new List<int>();
+            int maxVotes = votes.Max();
+
+            for (int i = 0; i < votes.Count; i++)
+            {
+                if (votes[i] == maxVotes)
+                {
+                    candidates.Add(i + 1);
+                }
+            }
+
+            return candidates;
+        }
     }
-
-
 }
